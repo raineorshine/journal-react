@@ -1,0 +1,54 @@
+{
+  "name": "journal-react",
+  "version": "0.0.0",
+  "description": "",
+  "license": "ISC",
+  "repository": "https://github.com/raineorshine/journal-react",
+  "author": {
+    "name": "Raine Revere",
+    "email": "raineorshine@gmail.com",
+    "url": "https://github.com/raineorshine"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "scripts": {
+    "test": "mocha --compilers babel-register"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "babel-register": "*",
+    "babelify": "*",
+    "browserify": "*",
+    "event-stream": "*",
+    "gulp": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-cached": "*",
+    "gulp-concat": "*",
+    "gulp-livereload": "*",
+    "gulp-minify-css": "*",
+    "gulp-notify": "*",
+    "gulp-plumber": "*",
+    "gulp-progeny": "*",
+    "gulp-rename": "*",
+    "gulp-sass": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-stylus": "*",
+    "gulp-util": "*",
+    "lodash.merge": "^4.4.0",
+    "nib": "*",
+    "r-dom": "*",
+    "react": "*",
+    "react-contenteditable": "^1.1.0",
+    "react-dom": "*",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "vinyl-buffer": "*",
+    "vinyl-source-stream": "*"
+  }
+}
