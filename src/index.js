@@ -4,7 +4,7 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import r from 'r-dom'
 import Outline from './components/outline'
-import data from './data/demo.js'
+import db from './data/demo.js'
 import merge from 'lodash.merge'
 import { render } from 'react-dom'
 import { v4 as uuid } from 'uuid'
@@ -14,9 +14,17 @@ const log = (...args) => {
   return args[args.length-1]
 }
 
+const insert = (array, beforeIndex, newItem) => {
+  return [
+    ...array.slice(0, beforeIndex),
+    newItem,
+    ...array.slice(beforeIndex)
+  ]
+}
+
 const store = createStore(reducer)
 
-store.dispatch({ type: 'INIT', data })
+store.dispatch({ type: 'INIT', data: db })
 
 // setInterval(() => {
 //   store.dispatch({ type: 'TICK', data: {
@@ -45,12 +53,14 @@ function updateOutline(state, tree) {
   const nodes = flattenTree(tree)
   return nodes.reduce((prevState, node, i) => {
     const prev = nodes[i-1]
-    let newDbNode
+    let nodesToMerge
 
     // new node (has same id as previous node due to contenteditable list)
     if(prev && node.id === prev.id) {
       const id = uuid()
-      newDbNode = {
+      const siblings = prevState[node.parent].children
+      const newIndex = siblings.indexOf(node.id) + 1
+      nodesToMerge = {
         // add the new node
         [id]: {
           id,
@@ -59,13 +69,13 @@ function updateOutline(state, tree) {
         },
         // add the new node as a child of its parent
         [node.parent]: merge({}, prevState[node.parent], {
-          children: prevState[node.parent].children.concat(id)
+          children: insert(siblings, newIndex, id)
         })
       }
     }
     // existing node
     else {
-      newDbNode = {
+      nodesToMerge = {
         [node.id]: merge({}, prevState[node.id], {
           value: node.value
         })
@@ -73,7 +83,7 @@ function updateOutline(state, tree) {
     }
 
     // merge the new database node into the previous state
-    return merge({}, prevState, newDbNode)
+    return merge({}, prevState, nodesToMerge)
   }, state)
 }
 
@@ -84,8 +94,7 @@ function reducer(state, { type, data }) {
     case 'TICK':
       return data
     case 'OUTLINE_CHANGE':
-      log(updateOutline(state, data))
-      return state
+      return updateOutline(state, data)
     default:
       return state
   }
@@ -93,7 +102,7 @@ function reducer(state, { type, data }) {
 
 render(
   r(Provider, { store }, [
-    r(Outline, { data }),
+    r(Outline(store), { db }),
   ]),
   document.getElementById('app')
 )

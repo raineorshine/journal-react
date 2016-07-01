@@ -4,42 +4,42 @@ import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 import { Provider, connect } from 'react-redux'
 import r from 'r-dom'
-import { div, h1, pre, ul } from 'r-dom'
+import { div, ul, span } from 'r-dom'
 import ContentEditable from 'react-contenteditable'
 import node from './node'
+import merge from 'lodash.merge'
 import * as Action from '../actions.js'
 
-const store = createStore(reducer)
+const Outline = store => {
 
-function reducer(state, { type, data }) {
-  switch (type) {
-    default:
-      return state
-  }
-}
+  function outline({ dispatch, db }) {
+    const content = r(Provider, { store }, [
+      ul([
+        r(node, {
+          db,
+          root: db.root
+        })
+      ])
+    ])
 
-function outline({ dispatch, data }) {
-  const content = r(Provider, { store }, [
-    ul([
-      r(node, {
-        data,
-        root: data.root
+    return div([
+      span([ Math.floor(Math.random() * 10000) ]),
+      r(ContentEditable, {
+        onChange: e => {
+          dispatch(Action.outlineChange(e.target.value))
+        },
+        html: ReactDOMServer.renderToStaticMarkup(content)
       })
     ])
-  ])
+  }
 
-  return div([
-    r(ContentEditable, {
-      onChange: e => {
-        dispatch(Action.outlineChange(e.target.value))
-      },
-      html: ReactDOMServer.renderToStaticMarkup(content)
+  function mapStateToProps(state) {
+    return merge({}, {
+      db: state
     })
-  ])
+  }
+
+  return connect(mapStateToProps)(outline)
 }
 
-function mapStateToProps(state) {
-  return state
-}
-
-export default connect(mapStateToProps)(outline)
+export default Outline
