@@ -94,7 +94,7 @@ function reducer(state, { type, data }) {
 
 render(
   r(Provider, { store }, [
-    r(outline),
+    r(outline)
   ]),
   document.getElementById('app')
 )
