@@ -10,36 +10,26 @@ import node from './node'
 import merge from 'lodash.merge'
 import * as Action from '../actions.js'
 
-const Outline = store => {
+function outline({ db, dispatch }) {
 
-  function outline({ dispatch, db }) {
-    const content = r(Provider, { store }, [
+  return div([
+    span([ Math.floor(Math.random() * 10000) ]),
+    div({
+      contentEditable: true,
+      onInput: e => {
+        // replace with MutationRecord
+        dispatch(Action.outlineChange(e.target.value))
+      },
+    }, [
       ul([
-        r(node, {
-          db,
-          root: db.root
-        })
+        r(node, db.root)
       ])
     ])
-
-    return div([
-      span([ Math.floor(Math.random() * 10000) ]),
-      r(ContentEditable, {
-        onChange: e => {
-          dispatch(Action.outlineChange(e.target.value))
-        },
-        html: ReactDOMServer.renderToStaticMarkup(content)
-      })
-    ])
-  }
-
-  function mapStateToProps(state) {
-    return merge({}, {
-      db: state
-    })
-  }
-
-  return connect(mapStateToProps)(outline)
+  ])
 }
 
-export default Outline
+function mapStateToProps(state) {
+  return state
+}
+
+export default connect(mapStateToProps)(outline)

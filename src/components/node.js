@@ -1,26 +1,26 @@
+import r from 'r-dom'
 import { connect } from 'react-redux'
 import { ul, li, sup, span } from 'r-dom'
 
-function handleInput() {
-  console.log('hi')
-}
-
-function node({ db, root: { id, value, parents, children } }) {
+function node({ id, value, parents, children }) {
   return li({
     id: id === 'root' ? 'root' : null,
-    'data-id': id,
-    onInput: handleInput
+    'data-id': id
   }, [
-    span({ className: 'content' }, [value]),
-    children ? ul(children.map(child => node({
-      db,
-      root: db[child]
+    span({ className: 'content' }, [Math.floor(Math.random() * 10000) + (value || '')]),
+    children ? ul(children.map(child => r(connectedNode, {
+      // set the id prop of the child node so that the state gets sliced correctly on render
+      id: child
     }))) : ''
   ])
 }
 
-function mapStateToProps(state) {
-  return state || {}
+function mapStateToProps({ db }, ownProps) {
+  // select the node from the db with the correct id
+  return db[ownProps.id]
 }
 
-export default connect(mapStateToProps)(node)
+const connectedNode = connect(mapStateToProps)(node)
+
+export default connectedNode
+// export default node

@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import r from 'r-dom'
-import Outline from './components/outline'
+import outline from './components/outline'
 import db from './data/demo.js'
 import merge from 'lodash.merge'
 import { render } from 'react-dom'
 import { v4 as uuid } from 'uuid'
+import u from 'updeep'
 
 const log = (...args) => {
   console.log(...args)
@@ -22,25 +23,7 @@ const insert = (array, beforeIndex, newItem) => {
   ]
 }
 
-const store = createStore(reducer)
-
-store.dispatch({ type: 'INIT', data: db })
-
-// setInterval(() => {
-//   store.dispatch({ type: 'TICK', data: {
-//     root: {
-//       id: 'root',
-//       parents: [],
-//       children: ['content']
-//     },
-//     content: {
-//       id: 'content',
-//       value: 'Content',
-//       parents: ['root'],
-//       children: []
-//     }
-//   }})
-// }, 500)
+const store = createStore(reducer, { db })
 
 /** Flatten a tree into an array. */
 function flattenTree(root) {
@@ -83,6 +66,7 @@ function updateOutline(state, tree) {
     }
 
     // merge the new database node into the previous state
+    // TODO: this returns an entirely new object. instead we need to update it in an immutable fashion
     return merge({}, prevState, nodesToMerge)
   }, state)
 }
@@ -94,7 +78,15 @@ function reducer(state, { type, data }) {
     case 'TICK':
       return data
     case 'OUTLINE_CHANGE':
-      return updateOutline(state, data)
+      console.log('OUTLINE_CHANGE')
+      return u({
+        db: {
+          experience: {
+            value: state.db.experience.value + '!'
+          }
+        }
+      }, state)
+      // return newState
     default:
       return state
   }
@@ -102,7 +94,7 @@ function reducer(state, { type, data }) {
 
 render(
   r(Provider, { store }, [
-    r(Outline(store), { db }),
+    r(outline),
   ]),
   document.getElementById('app')
 )

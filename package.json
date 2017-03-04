@@ -49,6 +49,7 @@
     "react-dom": "*",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
+    "updeep": "^1.0.0",
     "uuid": "^2.0.2",
     "vinyl-buffer": "*",
     "vinyl-source-stream": "*"

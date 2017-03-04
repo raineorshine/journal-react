@@ -18,6 +18,6 @@ function parseOutline(html) {
   return parseNode($('#root'))
 }
 
-export const outlineChange = html => {
-  return { type: 'OUTLINE_CHANGE', data: parseOutline(html) }
+export const outlineChange = value => {
+  return { type: 'OUTLINE_CHANGE', data: value/*parseOutline(value)*/ }
 }
